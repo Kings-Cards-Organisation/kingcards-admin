@@ -13,19 +13,21 @@ import CardHeader from "@material-ui/core/CardHeader";
 import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl"
 import InputLabel from "@material-ui/core/InputLabel"
+import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem"
 import Select from "@material-ui/core/Select"
+import Typography from '@material-ui/core/Typography';
+
 // import IconButton from "@material-ui/core/IconButton";
-// import ListItemIcon from "@material-ui/core/ListItemIcon";
-// import ListItemText from "@material-ui/core/ListItemText";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
 // import LocalOfferIcon from "@material-ui/icons/LocalOffer";
-// import Menu from "@material-ui/core/Menu";
 // import MenuItem from "@material-ui/core/MenuItem";
 // import MoreIcon from "@material-ui/icons/More";
 // import MoreVertIcon from "@material-ui/icons/MoreVert";
 // import NotificationsIcon from "@material-ui/icons/Notifications";
-// import PersonIcon from '@material-ui/icons/Person';
-// import SettingsIcon from "@material-ui/icons/Settings";
+import PersonIcon from '@material-ui/icons/Person';
+import SettingsIcon from "@material-ui/icons/Settings";
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from "@material-ui/icons/MoreVert";
@@ -85,6 +87,18 @@ const useStyles = makeStyles(theme => ({
   },
   stepDown: {
     marginTop: theme.spacing(1)
+  },
+  alignRight: {
+    textAlign: 'right'
+  },
+  green: {
+    color: 'green'
+  },
+  red: {
+    color: 'red'
+  },
+  yellow: {
+    color: '#ffd740'
   }
 }));
 
@@ -92,6 +106,8 @@ const Withdrawal = () => {
     const classes = useStyles();
     const [date, setDate] = useState('all')
     const [type, setType] = useState('all')
+    const [anchorEl, setAnchorEl] = useState(null)
+
     const demoWithdrawals = [
         {
             transactionId: '#2848099365',
@@ -146,10 +162,34 @@ const Withdrawal = () => {
 
     const handleChangeDate = (event) => setDate(event.target.value)
     const handleChangeType = (event) => setType(event.target.value)
+    const handleOpenMenu = event => setAnchorEl(event.currentTarget);
+    const handleCloseMenu = () => setAnchorEl(null)
+
+    const chartMenu = (
+        <Menu
+            id="transaction-item-menu"
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleCloseMenu}
+        >
+        <MenuItem onClick={handleCloseMenu}>
+            <ListItemIcon>
+                <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Details" />
+        </MenuItem>
+        <MenuItem onClick={handleCloseMenu}>
+            <ListItemIcon>
+                <PersonIcon />
+            </ListItemIcon>
+            <ListItemText primary="View User" />
+        </MenuItem>
+        </Menu>
+    );
 
     return (
         <Wrapper>
-            <AppBar position="static" className={classes.appBar} fill color="#51b53f">
+            <AppBar position="static" className={classes.appBar}>
             <Toolbar>
                 <Grid container spacing={1}>
                     <Hidden xsDown>
@@ -253,6 +293,8 @@ const Withdrawal = () => {
                 </Grid>
             </Toolbar>
 
+            {chartMenu}
+
             <Grid container spacing={2}>
                 {demoWithdrawals.map((withdrawal, index) => 
                     (<Fragment key={index}>
@@ -260,17 +302,64 @@ const Withdrawal = () => {
                             <Grid item xs={12} sm={6} md={6}>
                                 <Card>
                                     <CardHeader
-                                    subheader={withdrawal.transactionId}
-                                    action={
-                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleChangeType}>
-                                        <MoreVertIcon />
-                                      </IconButton>
-                                    }
+                                        subheader={withdrawal.transactionId}
+                                        action={
+                                            <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleOpenMenu}>
+                                                <MoreVertIcon />
+                                            </IconButton>
+                                        }
                                     />
-                                    <CardContent>${withdrawal.amount}</CardContent>
-                                    <CardContent>{withdrawal.user}</CardContent>
-                                    <CardContent>{withdrawal.date}</CardContent>
-                                    <CardContent>{withdrawal.status}</CardContent>
+                                    <Grid container spacing={1}>
+                                        <Grid item xs={12} sm={6} md={6}>
+                                            <CardContent>
+                                                <Typography
+                                                    variant="h5"
+                                                >
+                                                    ${withdrawal.amount}
+                                                </Typography>
+                                                <Typography
+                                                    variant="caption"
+                                                >
+                                                    {withdrawal.user}
+                                                </Typography>
+                                            </CardContent>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} className={classes.alignRight}>
+                                            <CardContent>
+                                                <Typography
+                                                    variant="caption"
+                                                >
+                                                    {withdrawal.date}
+                                                </Typography>
+                                                <Grid>
+                                                    {withdrawal.status === 'approved' && (
+                                                    <Typography
+                                                        variant="caption"
+                                                        className={classes.green}
+                                                    >
+                                                        {withdrawal.status}
+                                                    </Typography>
+                                                    )}
+                                                    {withdrawal.status === 'declined' && (
+                                                    <Typography
+                                                        variant="caption"
+                                                        className={classes.red}
+                                                    >
+                                                        {withdrawal.status}
+                                                    </Typography>
+                                                    )}
+                                                    {withdrawal.status === 'pending' && (
+                                                    <Typography
+                                                        variant="caption"
+                                                        className={classes.yellow}
+                                                    >
+                                                        {withdrawal.status}
+                                                    </Typography>
+                                                    )}
+                                                </Grid>
+                                            </CardContent>
+                                        </Grid>
+                                    </Grid>
                                 </Card>
                             </Grid>
                         )}
@@ -280,15 +369,62 @@ const Withdrawal = () => {
                                     <CardHeader
                                     subheader={withdrawal.transactionId}
                                     action={
-                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleChangeType}>
+                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleOpenMenu}>
                                         <MoreVertIcon />
                                       </IconButton>
                                     }
                                     />
-                                    <CardContent>${withdrawal.amount}</CardContent>
-                                    <CardContent>{withdrawal.user}</CardContent>
-                                    <CardContent>{withdrawal.date}</CardContent>
-                                    <CardContent>{withdrawal.status}</CardContent>
+                                    <Grid container spacing={1}>
+                                        <Grid item xs={12} sm={6} md={6}>
+                                            <CardContent>
+                                                <Typography
+                                                    variant="h5"
+                                                >
+                                                    ${withdrawal.amount}
+                                                </Typography>
+                                                <Typography
+                                                    variant="caption"
+                                                >
+                                                    {withdrawal.user}
+                                                </Typography>
+                                            </CardContent>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} className={classes.alignRight}>
+                                            <CardContent>
+                                                <Typography
+                                                    variant="caption"
+                                                >
+                                                    {withdrawal.date}
+                                                </Typography>
+                                                <Grid>
+                                                    {withdrawal.status === 'approved' && (
+                                                    <Typography
+                                                        variant="caption"
+                                                        className={classes.green}
+                                                    >
+                                                        {withdrawal.status}
+                                                    </Typography>
+                                                    )}
+                                                    {withdrawal.status === 'declined' && (
+                                                    <Typography
+                                                        variant="caption"
+                                                        className={classes.red}
+                                                    >
+                                                        {withdrawal.status}
+                                                    </Typography>
+                                                    )}
+                                                    {withdrawal.status === 'pending' && (
+                                                    <Typography
+                                                        variant="caption"
+                                                        className={classes.yellow}
+                                                    >
+                                                        {withdrawal.status}
+                                                    </Typography>
+                                                    )}
+                                                </Grid>
+                                            </CardContent>
+                                        </Grid>
+                                    </Grid>
                                 </Card>
                             </Grid>
                         )}
@@ -298,15 +434,62 @@ const Withdrawal = () => {
                                     <CardHeader
                                     subheader={withdrawal.transactionId}
                                     action={
-                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleChangeType}>
+                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleOpenMenu}>
                                         <MoreVertIcon />
                                       </IconButton>
                                     }
                                     />
-                                    <CardContent>${withdrawal.amount}</CardContent>
-                                    <CardContent>{withdrawal.user}</CardContent>
-                                    <CardContent>{withdrawal.date}</CardContent>
-                                    <CardContent>{withdrawal.status}</CardContent>
+                                    <Grid container spacing={1}>
+                                        <Grid item xs={12} sm={6} md={6}>
+                                            <CardContent>
+                                                <Typography
+                                                    variant="h5"
+                                                >
+                                                    ${withdrawal.amount}
+                                                </Typography>
+                                                <Typography
+                                                    variant="caption"
+                                                >
+                                                    {withdrawal.user}
+                                                </Typography>
+                                            </CardContent>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} className={classes.alignRight}>
+                                            <CardContent>
+                                                <Typography
+                                                    variant="caption"
+                                                >
+                                                    {withdrawal.date}
+                                                </Typography>
+                                                <Grid>
+                                                    {withdrawal.status === 'approved' && (
+                                                    <Typography
+                                                        variant="caption"
+                                                        className={classes.green}
+                                                    >
+                                                        {withdrawal.status}
+                                                    </Typography>
+                                                    )}
+                                                    {withdrawal.status === 'declined' && (
+                                                    <Typography
+                                                        variant="caption"
+                                                        className={classes.red}
+                                                    >
+                                                        {withdrawal.status}
+                                                    </Typography>
+                                                    )}
+                                                    {withdrawal.status === 'pending' && (
+                                                    <Typography
+                                                        variant="caption"
+                                                        className={classes.yellow}
+                                                    >
+                                                        {withdrawal.status}
+                                                    </Typography>
+                                                    )}
+                                                </Grid>
+                                            </CardContent>
+                                        </Grid>
+                                    </Grid>
                                 </Card>
                             </Grid>
                         )}
@@ -316,15 +499,62 @@ const Withdrawal = () => {
                                     <CardHeader
                                     subheader={withdrawal.transactionId}
                                     action={
-                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleChangeType}>
+                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleOpenMenu}>
                                         <MoreVertIcon />
                                       </IconButton>
                                     }
                                     />
-                                    <CardContent>${withdrawal.amount}</CardContent>
-                                    <CardContent>{withdrawal.user}</CardContent>
-                                    <CardContent>{withdrawal.date}</CardContent>
-                                    <CardContent>{withdrawal.status}</CardContent>
+                                    <Grid container spacing={1}>
+                                        <Grid item xs={12} sm={6} md={6}>
+                                            <CardContent>
+                                                <Typography
+                                                    variant="h5"
+                                                >
+                                                    ${withdrawal.amount}
+                                                </Typography>
+                                                <Typography
+                                                    variant="caption"
+                                                >
+                                                    {withdrawal.user}
+                                                </Typography>
+                                            </CardContent>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} md={6} className={classes.alignRight}>
+                                            <CardContent>
+                                                <Typography
+                                                    variant="caption"
+                                                >
+                                                    {withdrawal.date}
+                                                </Typography>
+                                                <Grid>
+                                                    {withdrawal.status === 'approved' && (
+                                                    <Typography
+                                                        variant="caption"
+                                                        className={classes.green}
+                                                    >
+                                                        {withdrawal.status}
+                                                    </Typography>
+                                                    )}
+                                                    {withdrawal.status === 'declined' && (
+                                                    <Typography
+                                                        variant="caption"
+                                                        className={classes.red}
+                                                    >
+                                                        {withdrawal.status}
+                                                    </Typography>
+                                                    )}
+                                                    {withdrawal.status === 'pending' && (
+                                                    <Typography
+                                                        variant="caption"
+                                                        className={classes.yellow}
+                                                    >
+                                                        {withdrawal.status}
+                                                    </Typography>
+                                                    )}
+                                                </Grid>
+                                            </CardContent>
+                                        </Grid>
+                                    </Grid>
                                 </Card>
                             </Grid>
                         )}

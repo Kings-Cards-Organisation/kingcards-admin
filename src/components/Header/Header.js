@@ -20,6 +20,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import Toolbar from '@material-ui/core/Toolbar';
 import { makeStyles } from '@material-ui/core/styles';
 
+
 const useStyles = makeStyles(theme => ({
   appBar: {
     boxShadow: '0 1px 8px rgba(0,0,0,.3)',
@@ -35,18 +36,26 @@ const useStyles = makeStyles(theme => ({
   },
   branding: {
     display: 'flex',
+    height: theme.spacing(4) * 2,
+    width: theme.spacing(4) * 2,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
     margin: 'auto 0',
-    lineHeight: '50px',
-    padding: `0 64px 0 0`
+    lineHeight: '50px'
   },
   logo: {
+    backgroundImage: `url(${process.env.PUBLIC_URL}/static/icons/android-icon-36x36.png)`,
+    height: '100%',
+    width: '100%',
     margin: 'auto',
     [theme.breakpoints.down('sm')]: {
       maxWidth: '80px'
-    }
+    },
+    backgroundSize: '80% 80%',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    filter: 'hue-rotate(-90deg)' 
   },
   searchWrapper: {
     flex: '1 1 0%',
@@ -121,7 +130,7 @@ const Header = ({
         </IconButton>
 
         <div className={classes.branding}>
-          <img src={logo} alt={logoAltText} className={classes.logo} />
+          <div className={classes.logo}></div>
         </div>
 
         <Hidden xsDown>
