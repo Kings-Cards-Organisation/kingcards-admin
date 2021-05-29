@@ -60,7 +60,7 @@ const AppProvider = ({ children }) => {
       }
     },
     shape: {
-      borderRadius: 4
+      borderRadius: 8
     }
   });
 

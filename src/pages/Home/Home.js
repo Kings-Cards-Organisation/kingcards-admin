@@ -1,12 +1,22 @@
+import React, { useState } from "react";
 import { Bar } from "react-chartjs-2";
+
 import {
   NewsCard,
   StatCard,
   Wrapper
 } from "../../components";
-import React, { useState } from "react";
-import demoFeed from "../../admin-charts/demoFeed";
-import demoContactMessages from "../../admin-contact-messages/messages";
+
+import {
+  dailySignups,
+  dailyWithdrawals,
+  dailyTrades,
+  dailySignins,
+  dailyWithdrawalVolume,
+  dailyTradeVolume
+} from "../../server/admin-charts/demoCharts";
+
+import demoContactMessages from "../../server/admin-contact-messages/messages";
 
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -96,7 +106,7 @@ const Home = () => {
         <Grid item xs={12} sm={12} md={4}>
           <Card>
             <CardHeader
-              subheader={demoFeed[0].title}
+              subheader={dailySignups.title}
               action={
                 <IconButton id={`signup-chart-menu-button`} onClick={handleClick}>
                   <MoreVertIcon />
@@ -105,9 +115,9 @@ const Home = () => {
             />
             <CardContent>
               <Bar
-                data={demoFeed[0].data}
-                height={demoFeed[0].height}
-                options={demoFeed[0].options}
+                data={dailySignups.data}
+                height={dailySignups.height}
+                options={dailySignups.options}
               />
             </CardContent>
           </Card>
@@ -116,7 +126,7 @@ const Home = () => {
         <Grid item xs={12} sm={12} md={4}>
           <Card>
             <CardHeader
-              subheader={demoFeed[1].title}
+              subheader={dailyWithdrawals.title}
               action={
                 <IconButton id={`withdrawal-chart-menu-button`} onClick={handleClick}>
                   <MoreVertIcon />
@@ -125,9 +135,9 @@ const Home = () => {
             />
             <CardContent>
               <Bar
-                data={demoFeed[1].data}
-                height={demoFeed[1].height}
-                options={demoFeed[1].options}
+                data={dailyWithdrawals.data}
+                height={dailyWithdrawals.height}
+                options={dailyWithdrawals.options}
               />
             </CardContent>
           </Card>
@@ -136,7 +146,7 @@ const Home = () => {
         <Grid item xs={12} sm={12} md={4}>
           <Card>
             <CardHeader
-              subheader={demoFeed[2].title}
+              subheader={dailyTrades.title}
               action={
                 <IconButton id={`trades-chart-menu-button`} onClick={handleClick}>
                   <MoreVertIcon />
@@ -145,9 +155,9 @@ const Home = () => {
             />
             <CardContent>
               <Bar
-                data={demoFeed[2].data}
-                height={demoFeed[2].height}
-                options={demoFeed[2].options}
+                data={dailyTrades.data}
+                height={dailyTrades.height}
+                options={dailyTrades.options}
               />
             </CardContent>
           </Card>
@@ -193,7 +203,7 @@ const Home = () => {
         <Grid item xs={12} sm={12} md={4}>
           <Card>
             <CardHeader
-              subheader={demoFeed[3].title}
+              subheader={dailySignins.title}
               action={
                 <IconButton id={`signin-chart-menu-button`} onClick={handleClick}>
                   <MoreVertIcon />
@@ -202,9 +212,9 @@ const Home = () => {
             />
             <CardContent>
               <Bar
-                data={demoFeed[3].data}
-                height={demoFeed[3].height}
-                options={demoFeed[3].options}
+                data={dailySignins.data}
+                height={dailySignins.height}
+                options={dailySignins.options}
               />
             </CardContent>
           </Card>
@@ -213,7 +223,7 @@ const Home = () => {
         <Grid item xs={12} sm={12} md={4}>
           <Card>
             <CardHeader
-              subheader={demoFeed[4].title}
+              subheader={dailyWithdrawalVolume.title}
               action={
                 <IconButton id={`withdrawal-volume-chart-menu-button`} onClick={handleClick}>
                   <MoreVertIcon />
@@ -222,9 +232,9 @@ const Home = () => {
             />
             <CardContent>
               <Bar
-                data={demoFeed[4].data}
-                height={demoFeed[4].height}
-                options={demoFeed[4].options}
+                data={dailyWithdrawalVolume.data}
+                height={dailyWithdrawalVolume.height}
+                options={dailyWithdrawalVolume.options}
               />
             </CardContent>
           </Card>
@@ -233,7 +243,7 @@ const Home = () => {
         <Grid item xs={12} sm={12} md={4}>
           <Card>
             <CardHeader
-              subheader={demoFeed[5].title}
+              subheader={dailyTradeVolume.title}
               action={
                 <IconButton id={`trade-volume-chart-menu-button`} onClick={handleClick}>
                   <MoreVertIcon />
@@ -242,9 +252,9 @@ const Home = () => {
             />
             <CardContent>
               <Bar
-                data={demoFeed[5].data}
-                height={demoFeed[5].height}
-                options={demoFeed[5].options}
+                data={dailyTradeVolume.data}
+                height={dailyTradeVolume.height}
+                options={dailyTradeVolume.options}
               />
             </CardContent>
           </Card>

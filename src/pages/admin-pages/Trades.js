@@ -37,7 +37,6 @@ import {
     
     const useStyles = makeStyles(theme => ({
       appBar: {
-        borderRadius: '10px',
         backgroundColor: 'rgba(0,0,0,.3)',
         boxShadow: '0 1px 8px rgba(0,0,0,.3)',
         position: 'relative',
@@ -108,11 +107,12 @@ import {
         const [type, setType] = useState('all')
         const [anchorEl, setAnchorEl] = useState(null)
     
-        const demoWithdrawals = [
+        const demoTrades = [
             {
                 transactionId: '#2848099365',
                 amount: '300',
                 date: '7th may 2021',
+                time: '04:21pm',
                 user: 'Mark Zuck',
                 status: 'pending'
             },
@@ -120,6 +120,7 @@ import {
                 transactionId: '#8091753439',
                 amount: '2300',
                 date: '7th may 2021',
+                time: '07:52am',
                 user: 'Jason Bourne',
                 status: 'pending'
             },
@@ -127,6 +128,7 @@ import {
                 transactionId: '#2937898436',
                 amount: '200',
                 date: '6th may 2021',
+                time: '08:24am',
                 user: 'Mark Zuck',
                 status: 'declined'
             },
@@ -134,6 +136,7 @@ import {
                 transactionId: '#5988276739',
                 amount: '400',
                 date: '4th may 2021',
+                time: '11:59am',
                 user: 'Mark Zuck',
                 status: 'approved'
             },
@@ -141,6 +144,7 @@ import {
                 transactionId: '#0993524168',
                 amount: '100',
                 date: '5th may 2021',
+                time: '10:39pm',
                 user: 'Jim Reeves',
                 status: 'declined'
             },
@@ -148,6 +152,7 @@ import {
                 transactionId: '#4854568997',
                 amount: '1200',
                 date: '6th may 2021',
+                time: '01:33pm',
                 user: 'Dow Jones',
                 status: 'approved'
             },
@@ -155,6 +160,7 @@ import {
                 transactionId: '#2657430664',
                 amount: '700',
                 date: '7th may 2021',
+                time: '12:19am',
                 user: 'Amy Schulz',
                 status: 'pending'
             }
@@ -165,7 +171,7 @@ import {
         const handleOpenMenu = event => setAnchorEl(event.currentTarget);
         const handleCloseMenu = () => setAnchorEl(null)
     
-        const chartMenu = (
+        const transactionMenu = (
             <Menu
                 id="transaction-item-menu"
                 anchorEl={anchorEl}
@@ -293,10 +299,10 @@ import {
                     </Grid>
                 </Toolbar>
     
-                {chartMenu}
+                {transactionMenu}
     
                 <Grid container spacing={2}>
-                    {demoWithdrawals.map((withdrawal, index) => 
+                    {demoTrades.map((withdrawal, index) => 
                         (<Fragment key={index}>
                             {type === 'all' && (
                                 <Grid item xs={12} sm={6} md={6}>

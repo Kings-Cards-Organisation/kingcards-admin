@@ -1,10 +1,15 @@
-// import { Bar } from "react-chartjs-2";
-import {
-//   NewsCard,
-  StatCard,
-  Wrapper
-} from "../../components";
+import { Bar } from "react-chartjs-2";
 import React, { Fragment, useState } from "react";
+
+import {
+    StatCard,
+    Wrapper
+} from "../../components";
+
+import {
+    dailyWithdrawals,
+    dailyWithdrawalVolume,
+} from "../../server/admin-charts/demoCharts";
 
 import AppBar from '@material-ui/core/AppBar';
 import Card from "@material-ui/core/Card";
@@ -23,7 +28,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 // import LocalOfferIcon from "@material-ui/icons/LocalOffer";
 // import MenuItem from "@material-ui/core/MenuItem";
-// import MoreIcon from "@material-ui/icons/More";
+import MoreIcon from "@material-ui/icons/More";
 // import MoreVertIcon from "@material-ui/icons/MoreVert";
 // import NotificationsIcon from "@material-ui/icons/Notifications";
 import PersonIcon from '@material-ui/icons/Person';
@@ -37,7 +42,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   appBar: {
-    borderRadius: '10px',
     backgroundColor: 'rgba(0,0,0,.3)',
     boxShadow: '0 1px 8px rgba(0,0,0,.3)',
     position: 'relative',
@@ -99,6 +103,9 @@ const useStyles = makeStyles(theme => ({
   },
   yellow: {
     color: '#ffd740'
+  },
+  blueBackground: {
+    backgroundColor: '#3f51b5'
   }
 }));
 
@@ -106,7 +113,8 @@ const Withdrawal = () => {
     const classes = useStyles();
     const [date, setDate] = useState('all')
     const [type, setType] = useState('all')
-    const [anchorEl, setAnchorEl] = useState(null)
+    const [transactionAnchorEl, setTransactionAnchorEl] = useState(null)
+    const [chartAnchorEl, setChartAnchorEl] = useState(null)
 
     const demoWithdrawals = [
         {
@@ -162,23 +170,47 @@ const Withdrawal = () => {
 
     const handleChangeDate = (event) => setDate(event.target.value)
     const handleChangeType = (event) => setType(event.target.value)
-    const handleOpenMenu = event => setAnchorEl(event.currentTarget);
-    const handleCloseMenu = () => setAnchorEl(null)
+    const handleOpenChartMenu = event => setChartAnchorEl(event.currentTarget);
+    const handleCloseChartMenu = event => setChartAnchorEl(null);
+    const handleOpenTransactionMenu = event => setTransactionAnchorEl(event.currentTarget);
+    const handleCloseTransactionMenu = () => setTransactionAnchorEl(null)
 
     const chartMenu = (
         <Menu
-            id="transaction-item-menu"
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleCloseMenu}
+          id="chart-menu"
+          anchorEl={chartAnchorEl}
+          open={Boolean(chartAnchorEl)}
+          onClose={handleCloseChartMenu}
         >
-        <MenuItem onClick={handleCloseMenu}>
+          <MenuItem onClick={handleCloseChartMenu}>
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Settings" />
+          </MenuItem>
+          <MenuItem onClick={handleCloseChartMenu}>
+            <ListItemIcon>
+              <MoreIcon />
+            </ListItemIcon>
+            <ListItemText primary="View more" />
+          </MenuItem>
+        </Menu>
+      );
+
+    const transactionMenu = (
+        <Menu
+            id="transaction-item-menu"
+            anchorEl={transactionAnchorEl}
+            open={Boolean(transactionAnchorEl)}
+            onClose={handleCloseTransactionMenu}
+        >
+        <MenuItem onClick={handleCloseTransactionMenu}>
             <ListItemIcon>
                 <SettingsIcon />
             </ListItemIcon>
             <ListItemText primary="Details" />
         </MenuItem>
-        <MenuItem onClick={handleCloseMenu}>
+        <MenuItem onClick={handleCloseTransactionMenu}>
             <ListItemIcon>
                 <PersonIcon />
             </ListItemIcon>
@@ -190,31 +222,31 @@ const Withdrawal = () => {
     return (
         <Wrapper>
             <AppBar position="static" className={classes.appBar}>
-            <Toolbar>
-                <Grid container spacing={1}>
-                    <Hidden xsDown>
-                        <div className={classes.searchWrapper}></div>
-                    </Hidden>
-                    <Hidden xsDown>
-                        <div className={classes.searchWrapper}>
-                            <form  className={classes.searchForm}>
-                                <input
-                                    className={classes.searchInput}
-                                    type="text"
-                                    placeholder="Enter transaction id / Username"
-                                    autoFocus={true}
-                                />
-                                <IconButton aria-label="Search" className={classes.searchIcon}>
-                                    <SearchIcon />
-                                </IconButton>
-                            </form>
-                        </div>
-                    </Hidden>
-                    <Hidden xsDown>
-                        <div className={classes.searchWrapper}></div>
-                    </Hidden>
-                </Grid>
-            </Toolbar>
+                <Toolbar>
+                    <Grid container spacing={1}>
+                        <Hidden xsDown>
+                            <div className={classes.searchWrapper}></div>
+                        </Hidden>
+                        <Hidden xsDown>
+                            <div className={classes.searchWrapper}>
+                                <form  className={classes.searchForm}>
+                                    <input
+                                        className={classes.searchInput}
+                                        type="text"
+                                        placeholder="Enter transaction id / Username"
+                                        autoFocus={true}
+                                    />
+                                    <IconButton aria-label="Search" className={classes.searchIcon}>
+                                        <SearchIcon />
+                                    </IconButton>
+                                </form>
+                            </div>
+                        </Hidden>
+                        <Hidden xsDown>
+                            <div className={classes.searchWrapper}></div>
+                        </Hidden>
+                    </Grid>
+                </Toolbar>
             </AppBar>
 
             <Toolbar className={classes.stepDown}>
@@ -250,50 +282,100 @@ const Withdrawal = () => {
                 </Grid>
             </Toolbar>
 
-            <Toolbar className={classes.stepDown}>
-                <Grid container spacing={1}>
-                    <Grid item xs={6} sm={3} md={2}>
-                        <FormControl variant="outlined" className={classes.formControl}>
-                            <InputLabel id="demo-simple-select-outlined-label">Date</InputLabel>
-                            <Select
-                            labelId="date-select-outlined-label"
-                            id="date-select-outlined"
-                            value={date}
-                            onChange={handleChangeDate}
-                            label="Date"
-                            >
-                                <MenuItem value="all">
-                                    <em>All</em>
-                                </MenuItem>
-                                <MenuItem value="Today">Today</MenuItem>
-                                <MenuItem value="set">Set</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
-
-                    <Grid item xs={6} sm={3} md={2}>
-                        <FormControl variant="outlined" className={classes.formControl}>
-                            <InputLabel id="demo-simple-select-outlined-label">Type</InputLabel>
-                            <Select
-                            labelId="type-select-outlined-label"
-                            id="type-select-outlined"
-                            value={type}
-                            onChange={handleChangeType}
-                            label="Date"
-                            >
-                                <MenuItem value="all">
-                                    <em>All</em>
-                                </MenuItem>
-                                <MenuItem value="approved">Approved</MenuItem>
-                                <MenuItem value="declined">Declined</MenuItem>
-                                <MenuItem value="pending">Pending</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                </Grid>
-            </Toolbar>
-
             {chartMenu}
+
+            <Grid container spacing={1}>
+                <Grid item xs={12} sm={12} md={12}></Grid>
+                <Grid item xs={12} sm={12} md={12}></Grid>
+
+                <Grid item xs={12} sm={6} md={6}>
+                    <Card>
+                        <CardHeader
+                        subheader={dailyWithdrawals.title}
+                        action={
+                            <IconButton id={`withdrawal-chart-menu-button`} onClick={handleOpenChartMenu}>
+                                <MoreVertIcon />
+                            </IconButton>
+                        }
+                        />
+                        <CardContent>
+                        <Bar
+                            data={dailyWithdrawals.data}
+                            height={dailyWithdrawals.height}
+                            options={dailyWithdrawals.options}
+                        />
+                        </CardContent>
+                    </Card>
+                </Grid>
+
+                <Grid item xs={12} sm={6} md={6}>
+                    <Card>
+                        <CardHeader
+                        subheader={dailyWithdrawalVolume.title}
+                        action={
+                            <IconButton id={`withdrawal-volume-chart-menu-button`} onClick={handleOpenChartMenu}>
+                                <MoreVertIcon />
+                            </IconButton>
+                        }
+                        />
+                        <CardContent>
+                        <Bar
+                            data={dailyWithdrawalVolume.data}
+                            height={dailyWithdrawalVolume.height}
+                            options={dailyWithdrawalVolume.options}
+                        />
+                        </CardContent>
+                    </Card>
+                </Grid>
+            </Grid>
+
+            <Grid container spacing={2}>
+                <Grid item xs={12} sm={12} md={12}></Grid>
+                <Grid item xs={12} sm={12} md={12}></Grid>
+
+                <Grid item xs={6} sm={3} md={2}>
+                    <FormControl variant="outlined" className={classes.formControl}>
+                        <InputLabel id="demo-simple-select-outlined-label">Date</InputLabel>
+                        <Select
+                        labelId="date-select-outlined-label"
+                        id="date-select-outlined"
+                        value={date}
+                        onChange={handleChangeDate}
+                        label="Date"
+                        >
+                            <MenuItem value="all">
+                                <em>All</em>
+                            </MenuItem>
+                            <MenuItem value="Today">Today</MenuItem>
+                            <MenuItem value="set">Set</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
+
+                <Grid item xs={6} sm={3} md={2}>
+                    <FormControl variant="outlined" className={classes.formControl}>
+                        <InputLabel id="demo-simple-select-outlined-label">Type</InputLabel>
+                        <Select
+                        labelId="type-select-outlined-label"
+                        id="type-select-outlined"
+                        value={type}
+                        onChange={handleChangeType}
+                        label="Date"
+                        >
+                            <MenuItem value="all">
+                                <em>All</em>
+                            </MenuItem>
+                            <MenuItem value="approved">Approved</MenuItem>
+                            <MenuItem value="declined">Declined</MenuItem>
+                            <MenuItem value="pending">Pending</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
+
+                <Grid item xs={12} sm={12} md={12}></Grid>
+            </Grid>
+
+            {transactionMenu}
 
             <Grid container spacing={2}>
                 {demoWithdrawals.map((withdrawal, index) => 
@@ -304,7 +386,7 @@ const Withdrawal = () => {
                                     <CardHeader
                                         subheader={withdrawal.transactionId}
                                         action={
-                                            <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleOpenMenu}>
+                                            <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleOpenTransactionMenu}>
                                                 <MoreVertIcon />
                                             </IconButton>
                                         }
@@ -369,7 +451,7 @@ const Withdrawal = () => {
                                     <CardHeader
                                     subheader={withdrawal.transactionId}
                                     action={
-                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleOpenMenu}>
+                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleOpenTransactionMenu}>
                                         <MoreVertIcon />
                                       </IconButton>
                                     }
@@ -434,7 +516,7 @@ const Withdrawal = () => {
                                     <CardHeader
                                     subheader={withdrawal.transactionId}
                                     action={
-                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleOpenMenu}>
+                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleOpenTransactionMenu}>
                                         <MoreVertIcon />
                                       </IconButton>
                                     }
@@ -499,7 +581,7 @@ const Withdrawal = () => {
                                     <CardHeader
                                     subheader={withdrawal.transactionId}
                                     action={
-                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleOpenMenu}>
+                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleOpenTransactionMenu}>
                                         <MoreVertIcon />
                                       </IconButton>
                                     }
