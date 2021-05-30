@@ -16,6 +16,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import routes from "../routes";
 import { useAppState } from "../components/AppProvider/AppProvider";
 import useMountEffect from "../mountEffect";
+import Trades from '../pages/admin-pages/Trades'
+
 
 const useStyles = makeStyles(theme => ({
   panel: {
@@ -102,6 +104,8 @@ const Dashboard = ({ history }) => {
 
   const getRoutes = (
     <Switch>
+      <Route exact path="/admin/withdrawals/:id" name="withdrawal-details" component={Trades} />
+
       {routes.items.map((item, index) =>
         item.type === "external" ? (
           <Route

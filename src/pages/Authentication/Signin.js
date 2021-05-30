@@ -54,7 +54,7 @@ const Signin = () => {
   const classes = useStyles();
   const history = useHistory();
 
-  function login() {
+  const login = () => {
     history.push("/admin");
   }
 

@@ -1,5 +1,6 @@
 import { Bar } from "react-chartjs-2";
 import React, { Fragment, useState } from "react";
+import { Link } from "react-router-dom";
 
 import {
     StatCard,
@@ -39,6 +40,7 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import SearchIcon from '@material-ui/icons/Search';
 import Toolbar from '@material-ui/core/Toolbar';
 import { makeStyles } from '@material-ui/core/styles';
+
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -109,58 +111,60 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Withdrawal = () => {
+const Withdrawal = ({ history }) => {
     const classes = useStyles();
     const [date, setDate] = useState('all')
     const [type, setType] = useState('all')
     const [transactionAnchorEl, setTransactionAnchorEl] = useState(null)
     const [chartAnchorEl, setChartAnchorEl] = useState(null)
+    const [transactionId, setTransactionId] = useState('')
+
 
     const demoWithdrawals = [
         {
-            transactionId: '#2848099365',
+            transactionId: '2848099365',
             amount: '300',
             date: '7th may 2021',
             user: 'Mark Zuck',
             status: 'pending'
         },
         {
-            transactionId: '#8091753439',
+            transactionId: '8091753439',
             amount: '2300',
             date: '7th may 2021',
             user: 'Jason Bourne',
             status: 'pending'
         },
         {
-            transactionId: '#2937898436',
+            transactionId: '2937898436',
             amount: '200',
             date: '6th may 2021',
             user: 'Mark Zuck',
             status: 'declined'
         },
         {
-            transactionId: '#5988276739',
+            transactionId: '5988276739',
             amount: '400',
             date: '4th may 2021',
             user: 'Mark Zuck',
             status: 'approved'
         },
         {
-            transactionId: '#0993524168',
+            transactionId: '0993524168',
             amount: '100',
             date: '5th may 2021',
             user: 'Jim Reeves',
             status: 'declined'
         },
         {
-            transactionId: '#4854568997',
+            transactionId: '4854568997',
             amount: '1200',
             date: '6th may 2021',
             user: 'Dow Jones',
             status: 'approved'
         },
         {
-            transactionId: '#2657430664',
+            transactionId: '2657430664',
             amount: '700',
             date: '7th may 2021',
             user: 'Amy Schulz',
@@ -171,9 +175,15 @@ const Withdrawal = () => {
     const handleChangeDate = (event) => setDate(event.target.value)
     const handleChangeType = (event) => setType(event.target.value)
     const handleOpenChartMenu = event => setChartAnchorEl(event.currentTarget);
-    const handleCloseChartMenu = event => setChartAnchorEl(null);
+    const handleCloseChartMenu = () => setChartAnchorEl(null);
     const handleOpenTransactionMenu = event => setTransactionAnchorEl(event.currentTarget);
     const handleCloseTransactionMenu = () => setTransactionAnchorEl(null)
+    const handleSetTransactionId = (transactionId) => setTransactionId(transactionId)
+    
+    const setSelectedTransactionId = (transactionId, event) => {
+        handleSetTransactionId(transactionId)
+        handleOpenTransactionMenu(event)
+    }
 
     const chartMenu = (
         <Menu
@@ -204,18 +214,21 @@ const Withdrawal = () => {
             open={Boolean(transactionAnchorEl)}
             onClose={handleCloseTransactionMenu}
         >
-        <MenuItem onClick={handleCloseTransactionMenu}>
-            <ListItemIcon>
-                <SettingsIcon />
-            </ListItemIcon>
-            <ListItemText primary="Details" />
-        </MenuItem>
-        <MenuItem onClick={handleCloseTransactionMenu}>
-            <ListItemIcon>
-                <PersonIcon />
-            </ListItemIcon>
-            <ListItemText primary="View User" />
-        </MenuItem>
+            <Link to={`/admin/withdrawals/${transactionId}`}>
+                <MenuItem onClick={handleCloseTransactionMenu}>
+                    <ListItemIcon>
+                        <SettingsIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Details" />
+                </MenuItem>
+            </Link>
+
+            <MenuItem onClick={handleCloseTransactionMenu}>
+                <ListItemIcon>
+                    <PersonIcon />
+                </ListItemIcon>
+                <ListItemText primary="View User" />
+            </MenuItem>
         </Menu>
     );
 
@@ -377,16 +390,16 @@ const Withdrawal = () => {
 
             {transactionMenu}
 
-            <Grid container spacing={2}>
+            <Grid container spacing={1}>
                 {demoWithdrawals.map((withdrawal, index) => 
                     (<Fragment key={index}>
                         {type === 'all' && (
                             <Grid item xs={12} sm={6} md={6}>
                                 <Card>
                                     <CardHeader
-                                        subheader={withdrawal.transactionId}
+                                        subheader={`Transaction ID: ${withdrawal.transactionId}`}
                                         action={
-                                            <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleOpenTransactionMenu}>
+                                            <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={(event) => setSelectedTransactionId(withdrawal.transactionId, event)}>
                                                 <MoreVertIcon />
                                             </IconButton>
                                         }
@@ -449,9 +462,9 @@ const Withdrawal = () => {
                             <Grid item xs={12} sm={6} md={6}>
                                 <Card>
                                     <CardHeader
-                                    subheader={withdrawal.transactionId}
+                                    subheader={`Transaction ID: ${withdrawal.transactionId}`}
                                     action={
-                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleOpenTransactionMenu}>
+                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={(event) => setSelectedTransactionId(withdrawal.transactionId, event)}>
                                         <MoreVertIcon />
                                       </IconButton>
                                     }
@@ -514,9 +527,9 @@ const Withdrawal = () => {
                             <Grid item xs={12} sm={6} md={6}>
                                 <Card>
                                     <CardHeader
-                                    subheader={withdrawal.transactionId}
+                                    subheader={`Transaction ID: ${withdrawal.transactionId}`}
                                     action={
-                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleOpenTransactionMenu}>
+                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={(event) => setSelectedTransactionId(withdrawal.transactionId, event)}>
                                         <MoreVertIcon />
                                       </IconButton>
                                     }
@@ -579,9 +592,9 @@ const Withdrawal = () => {
                             <Grid item xs={12} sm={6} md={6}>
                                 <Card>
                                     <CardHeader
-                                    subheader={withdrawal.transactionId}
+                                    subheader={`Transaction ID: ${withdrawal.transactionId}`}
                                     action={
-                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={handleOpenTransactionMenu}>
+                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={(event) => setSelectedTransactionId(withdrawal.transactionId, event)}>
                                         <MoreVertIcon />
                                       </IconButton>
                                     }
@@ -643,7 +656,6 @@ const Withdrawal = () => {
                     </Fragment>)
                 )}
             </Grid>
-            
         </Wrapper>
     )
 
