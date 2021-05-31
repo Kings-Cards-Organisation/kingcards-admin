@@ -40,6 +40,7 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import SearchIcon from '@material-ui/icons/Search';
 import Toolbar from '@material-ui/core/Toolbar';
 import { makeStyles } from '@material-ui/core/styles';
+import demoWithdrawals from '../../server/demo-user-data/demoWithdrawals'
 
 
 const useStyles = makeStyles(theme => ({
@@ -111,66 +112,13 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Withdrawal = ({ history }) => {
+const Withdrawal = () => {
     const classes = useStyles();
     const [date, setDate] = useState('all')
     const [type, setType] = useState('all')
     const [transactionAnchorEl, setTransactionAnchorEl] = useState(null)
     const [chartAnchorEl, setChartAnchorEl] = useState(null)
     const [transactionId, setTransactionId] = useState('')
-
-
-    const demoWithdrawals = [
-        {
-            transactionId: '2848099365',
-            amount: '300',
-            date: '7th may 2021',
-            user: 'Mark Zuck',
-            status: 'pending'
-        },
-        {
-            transactionId: '8091753439',
-            amount: '2300',
-            date: '7th may 2021',
-            user: 'Jason Bourne',
-            status: 'pending'
-        },
-        {
-            transactionId: '2937898436',
-            amount: '200',
-            date: '6th may 2021',
-            user: 'Mark Zuck',
-            status: 'declined'
-        },
-        {
-            transactionId: '5988276739',
-            amount: '400',
-            date: '4th may 2021',
-            user: 'Mark Zuck',
-            status: 'approved'
-        },
-        {
-            transactionId: '0993524168',
-            amount: '100',
-            date: '5th may 2021',
-            user: 'Jim Reeves',
-            status: 'declined'
-        },
-        {
-            transactionId: '4854568997',
-            amount: '1200',
-            date: '6th may 2021',
-            user: 'Dow Jones',
-            status: 'approved'
-        },
-        {
-            transactionId: '2657430664',
-            amount: '700',
-            date: '7th may 2021',
-            user: 'Amy Schulz',
-            status: 'pending'
-        }
-    ]
 
     const handleChangeDate = (event) => setDate(event.target.value)
     const handleChangeType = (event) => setType(event.target.value)

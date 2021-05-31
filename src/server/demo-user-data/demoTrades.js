@@ -1,6 +1,6 @@
-const demoWithdrawals = [
+const demoTrades = [
     {
-        transactionType: 'withdrawal',
+        transactionType: 'trade',
         transactionId: '2848099365',
         amount: '300',
         date: '7th may 2021',
@@ -11,7 +11,7 @@ const demoWithdrawals = [
         finalBalance: '4700'
     },
     {
-        transactionType: 'withdrawal',
+        transactionType: 'trade',
         transactionId: '8091753439',
         amount: '2300',
         date: '7th may 2021',
@@ -22,7 +22,7 @@ const demoWithdrawals = [
         finalBalance: '2700'
     },
     {
-        transactionType: 'withdrawal',
+        transactionType: 'trade',
         transactionId: '2937898436',
         amount: '200',
         date: '6th may 2021',
@@ -33,7 +33,7 @@ const demoWithdrawals = [
         finalBalance: '4800'
     },
     {
-        transactionType: 'withdrawal',
+        transactionType: 'trade',
         transactionId: '5988276739',
         amount: '400',
         date: '4th may 2021',
@@ -44,7 +44,7 @@ const demoWithdrawals = [
         finalBalance: '4600'
     },
     {
-        transactionType: 'withdrawal',
+        transactionType: 'trade',
         transactionId: '0993524168',
         amount: '100',
         date: '5th may 2021',
@@ -55,7 +55,7 @@ const demoWithdrawals = [
         finalBalance: '4900'
     },
     {
-        transactionType: 'withdrawal',
+        transactionType: 'trade',
         transactionId: '4854568997',
         amount: '1200',
         date: '6th may 2021',
@@ -66,7 +66,7 @@ const demoWithdrawals = [
         finalBalance: '3800'
     },
     {
-        transactionType: 'withdrawal',
+        transactionType: 'trade',
         transactionId: '2657430664',
         amount: '700',
         date: '7th may 2021',
@@ -78,4 +78,4 @@ const demoWithdrawals = [
     }
 ]
 
-export default demoWithdrawals
+export default demoTrades

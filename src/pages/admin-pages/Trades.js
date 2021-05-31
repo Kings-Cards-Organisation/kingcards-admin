@@ -40,6 +40,7 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import SearchIcon from '@material-ui/icons/Search';
 import Toolbar from '@material-ui/core/Toolbar';
 import { makeStyles } from '@material-ui/core/styles';
+import demoTrades from '../../server/demo-user-data/demoTrades'
 
 
 const useStyles = makeStyles(theme => ({
@@ -111,66 +112,13 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Trade = ({ history }) => {
+const Trade = () => {
     const classes = useStyles();
     const [date, setDate] = useState('all')
     const [type, setType] = useState('all')
     const [transactionAnchorEl, setTransactionAnchorEl] = useState(null)
     const [chartAnchorEl, setChartAnchorEl] = useState(null)
     const [transactionId, setTransactionId] = useState('')
-
-
-    const demoWithdrawals = [
-        {
-            transactionId: '2848099365',
-            amount: '300',
-            date: '7th may 2021',
-            user: 'Mark Zuck',
-            status: 'pending'
-        },
-        {
-            transactionId: '8091753439',
-            amount: '2300',
-            date: '7th may 2021',
-            user: 'Jason Bourne',
-            status: 'pending'
-        },
-        {
-            transactionId: '2937898436',
-            amount: '200',
-            date: '6th may 2021',
-            user: 'Mark Zuck',
-            status: 'declined'
-        },
-        {
-            transactionId: '5988276739',
-            amount: '400',
-            date: '4th may 2021',
-            user: 'Mark Zuck',
-            status: 'approved'
-        },
-        {
-            transactionId: '0993524168',
-            amount: '100',
-            date: '5th may 2021',
-            user: 'Jim Reeves',
-            status: 'declined'
-        },
-        {
-            transactionId: '4854568997',
-            amount: '1200',
-            date: '6th may 2021',
-            user: 'Dow Jones',
-            status: 'approved'
-        },
-        {
-            transactionId: '2657430664',
-            amount: '700',
-            date: '7th may 2021',
-            user: 'Amy Schulz',
-            status: 'pending'
-        }
-    ]
 
     const handleChangeDate = (event) => setDate(event.target.value)
     const handleChangeType = (event) => setType(event.target.value)
@@ -214,7 +162,7 @@ const Trade = ({ history }) => {
             open={Boolean(transactionAnchorEl)}
             onClose={handleCloseTransactionMenu}
         >
-            <Link to={`/admin/withdrawals/${transactionId}`}>
+            <Link to={`/admin/trades/${transactionId}`}>
                 <MenuItem onClick={handleCloseTransactionMenu}>
                     <ListItemIcon>
                         <SettingsIcon />
@@ -391,7 +339,7 @@ const Trade = ({ history }) => {
             {transactionMenu}
 
             <Grid container spacing={1}>
-                {demoWithdrawals.map((withdrawal, index) => 
+                {demoTrades.map((withdrawal, index) => 
                     (<Fragment key={index}>
                         {type === 'all' && (
                             <Grid item xs={12} sm={6} md={6}>
