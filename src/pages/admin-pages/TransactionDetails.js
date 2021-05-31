@@ -152,7 +152,32 @@ const TransactionDetails = (props) => {
                                     <Typography
                                         variant="caption"
                                     >
-                                        Status: {transaction.status}
+                                        Status: {transaction.status === 'approved' && (
+                                            <Typography
+                                                variant="caption"
+                                                className={classes.green}
+                                            >
+                                                {transaction.status}
+                                            </Typography>
+                                        )}
+
+                                        {transaction.status === 'declined' && (
+                                            <Typography
+                                                variant="caption"
+                                                className={classes.red}
+                                            >
+                                                {transaction.status}
+                                            </Typography>
+                                        )}
+
+                                        {transaction.status === 'pending' && (
+                                            <Typography
+                                                variant="caption"
+                                                className={classes.yellow}
+                                            >
+                                                {transaction.status}
+                                            </Typography>
+                                        )}
                                     </Typography>
                                 </CardContent>
                             </Grid>
