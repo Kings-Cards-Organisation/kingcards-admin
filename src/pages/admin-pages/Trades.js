@@ -12,7 +12,6 @@ import {
     dailyTradeVolume,
 } from "../../server/admin-charts/demoCharts";
 
-import AppBar from '@material-ui/core/AppBar';
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -40,7 +39,8 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import SearchIcon from '@material-ui/icons/Search';
 import Toolbar from '@material-ui/core/Toolbar';
 import { makeStyles } from '@material-ui/core/styles';
-import demoTrades from '../../server/demo-user-data/demoTrades'
+import trades from '../../server/demo-user-data/demoTrades'
+import { Button } from "@material-ui/core";
 
 
 const useStyles = makeStyles(theme => ({
@@ -66,8 +66,11 @@ const useStyles = makeStyles(theme => ({
     background: 'white',
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
-    marginRight: theme.spacing(1) * 2,
     paddingRight: theme.spacing(10) * 2.5,
+    [theme.breakpoints.down('xs')]: {
+      paddingRight: theme.spacing(2) * 2.5,
+      minWidth: '75vw'
+    },
     display: 'block',
     maxWidth: '800px'
   },
@@ -75,10 +78,11 @@ const useStyles = makeStyles(theme => ({
     fontSize: '1rem',
     padding: theme.spacing(1) * 1.5,
     paddingRight: theme.spacing(10) * 2.5,
-    [theme.breakpoints.down('xs')]: {
-      padding: theme.spacing(1) * 1.2
-    },
     marginRight: theme.spacing(1) * 2,
+    [theme.breakpoints.down('xs')]: {
+      paddingRight: theme.spacing(2) * 2.5,
+      maxWidth: '70vw'
+    },
     cursor: 'text',
     border: 'none',
     background: 'transparent',
@@ -93,7 +97,7 @@ const useStyles = makeStyles(theme => ({
     color: 'rgba(0,0,0,.87)'
   },
   stepDown: {
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(10)
   },
   alignRight: {
     textAlign: 'right'
@@ -107,10 +111,32 @@ const useStyles = makeStyles(theme => ({
   yellow: {
     color: '#ffd740'
   },
-  blueBackground: {
-    backgroundColor: '#3f51b5'
+  greenBackground: {
+    backgroundColor: 'green',
+    color: 'white'
+  },
+  redBackground: {
+    backgroundColor: 'red',
+    color: 'white'
+  },
+  transparentBackground: {
+    width: '100%',
+    position: 'relative',
+    left: '0px',
+    zIndex: 2,
+    backgroundColor: 'rgb(0, 0, 0, 0.25)'
+  },
+  centerContent: {
+    display: 'flex',
+    justifyContent: 'center'
   }
 }));
+
+
+const useForceUpdate = () => {
+    const [forcedTransaction, setForcedTransaction] = useState(0)
+    return () => setForcedTransaction(forcedTransaction + 1)
+}
 
 const Trade = () => {
     const classes = useStyles();
@@ -119,14 +145,37 @@ const Trade = () => {
     const [transactionAnchorEl, setTransactionAnchorEl] = useState(null)
     const [chartAnchorEl, setChartAnchorEl] = useState(null)
     const [transactionId, setTransactionId] = useState('')
+    const [demoTrades, setDemoTrades] = useState(trades)
+
+    const forceUpdate = useForceUpdate()
 
     const handleChangeDate = (event) => setDate(event.target.value)
     const handleChangeType = (event) => setType(event.target.value)
-    const handleOpenChartMenu = event => setChartAnchorEl(event.currentTarget);
+    const handleOpenChartMenu = (event) => setChartAnchorEl(event.currentTarget);
     const handleCloseChartMenu = () => setChartAnchorEl(null);
-    const handleOpenTransactionMenu = event => setTransactionAnchorEl(event.currentTarget);
+    const handleOpenTransactionMenu = (event) => setTransactionAnchorEl(event.currentTarget);
     const handleCloseTransactionMenu = () => setTransactionAnchorEl(null)
     const handleSetTransactionId = (transactionId) => setTransactionId(transactionId)
+
+    const handleApprove = (transactionId) => {
+        for (let index = 0; index < demoTrades.length; index++) {
+            if (demoTrades[index].transactionId === transactionId) {
+                demoTrades[index].status = 'approved'
+                demoTrades.splice(index, 1, demoTrades[index])
+                return setDemoTrades(demoTrades)
+            }
+        }
+    }
+
+    const handleDecline = (transactionId) => {
+        for (let index = 0; index < demoTrades.length; index++) {
+            if (demoTrades[index].transactionId === transactionId) {
+                demoTrades[index].status = 'declined'
+                demoTrades.splice(index, 1, demoTrades[index])
+                return setDemoTrades(demoTrades)
+            }
+        }
+    }
     
     const setSelectedTransactionId = (transactionId, event) => {
         handleSetTransactionId(transactionId)
@@ -182,13 +231,13 @@ const Trade = () => {
 
     return (
         <Wrapper>
-            <AppBar position="static" className={classes.appBar}>
+            <Grid className={classes.transparentBackground}>
                 <Toolbar>
                     <Grid container spacing={1}>
-                        <Hidden xsDown>
+                        <Hidden>
                             <div className={classes.searchWrapper}></div>
                         </Hidden>
-                        <Hidden xsDown>
+                        <Hidden>
                             <div className={classes.searchWrapper}>
                                 <form  className={classes.searchForm}>
                                     <input
@@ -203,12 +252,12 @@ const Trade = () => {
                                 </form>
                             </div>
                         </Hidden>
-                        <Hidden xsDown>
-                            <div className={classes.searchWrapper}></div>
+                        <Hidden>
+                                <div className={classes.searchWrapper}></div>
                         </Hidden>
                     </Grid>
                 </Toolbar>
-            </AppBar>
+            </Grid>
 
             <Toolbar className={classes.stepDown}>
                 <Grid container spacing={1}>
@@ -274,7 +323,7 @@ const Trade = () => {
                         <CardHeader
                         subheader={dailyTradeVolume.title}
                         action={
-                            <IconButton id={`withdrawal-volume-chart-menu-button`} onClick={handleOpenChartMenu}>
+                            <IconButton id={`trade-volume-chart-menu-button`} onClick={handleOpenChartMenu}>
                                 <MoreVertIcon />
                             </IconButton>
                         }
@@ -294,7 +343,7 @@ const Trade = () => {
                 <Grid item xs={12} sm={12} md={12}></Grid>
                 <Grid item xs={12} sm={12} md={12}></Grid>
 
-                <Grid item xs={6} sm={3} md={2}>
+                <Grid item xs={6} sm={3} md={2} className={classes.centerContent}>
                     <FormControl variant="outlined" className={classes.formControl}>
                         <InputLabel id="demo-simple-select-outlined-label">Date</InputLabel>
                         <Select
@@ -313,7 +362,7 @@ const Trade = () => {
                     </FormControl>
                 </Grid>
 
-                <Grid item xs={6} sm={3} md={2}>
+                <Grid item xs={6} sm={3} md={2} className={classes.centerContent}>
                     <FormControl variant="outlined" className={classes.formControl}>
                         <InputLabel id="demo-simple-select-outlined-label">Type</InputLabel>
                         <Select
@@ -339,64 +388,143 @@ const Trade = () => {
             {transactionMenu}
 
             <Grid container spacing={1}>
-                {demoTrades.map((withdrawal, index) => 
+                {demoTrades.map((trade, index) => 
                     (<Fragment key={index}>
                         {type === 'all' && (
                             <Grid item xs={12} sm={6} md={6}>
                                 <Card>
                                     <CardHeader
-                                        subheader={`Transaction ID: ${withdrawal.transactionId}`}
+                                        subheader={`Transaction ID: ${trade.transactionId}`}
                                         action={
-                                            <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={(event) => setSelectedTransactionId(withdrawal.transactionId, event)}>
+                                            <IconButton id={`${trade.transactionId}-menu-button`} onClick={(event) => setSelectedTransactionId(trade.transactionId, event)}>
                                                 <MoreVertIcon />
                                             </IconButton>
                                         }
                                     />
                                     <Grid container spacing={1}>
-                                        <Grid item xs={12} sm={6} md={6}>
+                                        <Grid item xs={6} sm={6} md={6}>
                                             <CardContent>
                                                 <Typography
                                                     variant="h5"
                                                 >
-                                                    ${withdrawal.amount}
+                                                    ${trade.amount}
                                                 </Typography>
                                                 <Typography
                                                     variant="caption"
                                                 >
-                                                    {withdrawal.user}
+                                                    {trade.user}
                                                 </Typography>
                                             </CardContent>
                                         </Grid>
-                                        <Grid item xs={12} sm={6} md={6} className={classes.alignRight}>
+                                        <Grid item xs={6} sm={6} md={6} className={classes.alignRight}>
                                             <CardContent>
                                                 <Typography
                                                     variant="caption"
                                                 >
-                                                    {withdrawal.date}
+                                                    {trade.date}
                                                 </Typography>
                                                 <Grid>
-                                                    {withdrawal.status === 'approved' && (
+                                                    {trade.status === 'approved' && (
                                                     <Typography
                                                         variant="caption"
                                                         className={classes.green}
                                                     >
-                                                        {withdrawal.status}
+                                                        {trade.status}
                                                     </Typography>
                                                     )}
-                                                    {withdrawal.status === 'declined' && (
+                                                    {trade.status === 'declined' && (
                                                     <Typography
                                                         variant="caption"
                                                         className={classes.red}
                                                     >
-                                                        {withdrawal.status}
+                                                        {trade.status}
                                                     </Typography>
                                                     )}
-                                                    {withdrawal.status === 'pending' && (
+                                                    {trade.status === 'pending' && (
                                                     <Typography
                                                         variant="caption"
                                                         className={classes.yellow}
                                                     >
-                                                        {withdrawal.status}
+                                                        {trade.status}
+                                                    </Typography>
+                                                    )}
+                                                </Grid>
+                                            </CardContent>
+                                        </Grid>
+                                    </Grid>
+                                    {trade.status === 'pending' && (
+                                        <Grid container spacing={1}>
+                                            <Grid item  xs={6} sm={6} md={6} className={classes.centerContent}>
+                                                <CardContent>
+                                                    <Button variant="contained" className={classes.green} onClick={() => {handleApprove(trade.transactionId); forceUpdate()}}>Approve</Button>
+                                                </CardContent>
+                                            </Grid>
+                                            <Grid item  xs={6} sm={6} md={6} className={classes.centerContent}>
+                                                <CardContent>
+                                                    <Button variant="contained" className={classes.red} onClick={() => {handleDecline(trade.transactionId); forceUpdate()}}>Decline</Button>
+                                                </CardContent>
+                                            </Grid>
+                                        </Grid>
+                                    )}
+                                </Card>
+                            </Grid>
+                        )}
+                        {type === 'approved' && trade.status === type && (
+                            <Grid item xs={12} sm={6} md={6}>
+                                <Card>
+                                    <CardHeader
+                                    subheader={`Transaction ID: ${trade.transactionId}`}
+                                    action={
+                                      <IconButton id={`${trade.transactionId}-menu-button`} onClick={(event) => setSelectedTransactionId(trade.transactionId, event)}>
+                                        <MoreVertIcon />
+                                      </IconButton>
+                                    }
+                                    />
+                                    <Grid container spacing={1}>
+                                        <Grid item xs={6} sm={6} md={6}>
+                                            <CardContent>
+                                                <Typography
+                                                    variant="h5"
+                                                >
+                                                    ${trade.amount}
+                                                </Typography>
+                                                <Typography
+                                                    variant="caption"
+                                                >
+                                                    {trade.user}
+                                                </Typography>
+                                            </CardContent>
+                                        </Grid>
+                                        <Grid item xs={6} sm={6} md={6} className={classes.alignRight}>
+                                            <CardContent>
+                                                <Typography
+                                                    variant="caption"
+                                                >
+                                                    {trade.date}
+                                                </Typography>
+                                                <Grid>
+                                                    {trade.status === 'approved' && (
+                                                    <Typography
+                                                        variant="caption"
+                                                        className={classes.green}
+                                                    >
+                                                        {trade.status}
+                                                    </Typography>
+                                                    )}
+                                                    {trade.status === 'declined' && (
+                                                    <Typography
+                                                        variant="caption"
+                                                        className={classes.red}
+                                                    >
+                                                        {trade.status}
+                                                    </Typography>
+                                                    )}
+                                                    {trade.status === 'pending' && (
+                                                    <Typography
+                                                        variant="caption"
+                                                        className={classes.yellow}
+                                                    >
+                                                        {trade.status}
                                                     </Typography>
                                                     )}
                                                 </Grid>
@@ -406,62 +534,62 @@ const Trade = () => {
                                 </Card>
                             </Grid>
                         )}
-                        {type === 'approved' && withdrawal.status === type && (
+                        {type === 'declined' && trade.status === type && (
                             <Grid item xs={12} sm={6} md={6}>
                                 <Card>
                                     <CardHeader
-                                    subheader={`Transaction ID: ${withdrawal.transactionId}`}
+                                    subheader={`Transaction ID: ${trade.transactionId}`}
                                     action={
-                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={(event) => setSelectedTransactionId(withdrawal.transactionId, event)}>
+                                      <IconButton id={`${trade.transactionId}-menu-button`} onClick={(event) => setSelectedTransactionId(trade.transactionId, event)}>
                                         <MoreVertIcon />
                                       </IconButton>
                                     }
                                     />
                                     <Grid container spacing={1}>
-                                        <Grid item xs={12} sm={6} md={6}>
+                                        <Grid item xs={6} sm={6} md={6}>
                                             <CardContent>
                                                 <Typography
                                                     variant="h5"
                                                 >
-                                                    ${withdrawal.amount}
+                                                    ${trade.amount}
                                                 </Typography>
                                                 <Typography
                                                     variant="caption"
                                                 >
-                                                    {withdrawal.user}
+                                                    {trade.user}
                                                 </Typography>
                                             </CardContent>
                                         </Grid>
-                                        <Grid item xs={12} sm={6} md={6} className={classes.alignRight}>
+                                        <Grid item xs={6} sm={6} md={6} className={classes.alignRight}>
                                             <CardContent>
                                                 <Typography
                                                     variant="caption"
                                                 >
-                                                    {withdrawal.date}
+                                                    {trade.date}
                                                 </Typography>
                                                 <Grid>
-                                                    {withdrawal.status === 'approved' && (
+                                                    {trade.status === 'approved' && (
                                                     <Typography
                                                         variant="caption"
                                                         className={classes.green}
                                                     >
-                                                        {withdrawal.status}
+                                                        {trade.status}
                                                     </Typography>
                                                     )}
-                                                    {withdrawal.status === 'declined' && (
+                                                    {trade.status === 'declined' && (
                                                     <Typography
                                                         variant="caption"
                                                         className={classes.red}
                                                     >
-                                                        {withdrawal.status}
+                                                        {trade.status}
                                                     </Typography>
                                                     )}
-                                                    {withdrawal.status === 'pending' && (
+                                                    {trade.status === 'pending' && (
                                                     <Typography
                                                         variant="caption"
                                                         className={classes.yellow}
                                                     >
-                                                        {withdrawal.status}
+                                                        {trade.status}
                                                     </Typography>
                                                     )}
                                                 </Grid>
@@ -471,130 +599,77 @@ const Trade = () => {
                                 </Card>
                             </Grid>
                         )}
-                        {type === 'declined' && withdrawal.status === type && (
+                        {type === 'pending' && trade.status === type && (
                             <Grid item xs={12} sm={6} md={6}>
                                 <Card>
                                     <CardHeader
-                                    subheader={`Transaction ID: ${withdrawal.transactionId}`}
+                                    subheader={`Transaction ID: ${trade.transactionId}`}
                                     action={
-                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={(event) => setSelectedTransactionId(withdrawal.transactionId, event)}>
+                                      <IconButton id={`${trade.transactionId}-menu-button`} onClick={(event) => setSelectedTransactionId(trade.transactionId, event)}>
                                         <MoreVertIcon />
                                       </IconButton>
                                     }
                                     />
                                     <Grid container spacing={1}>
-                                        <Grid item xs={12} sm={6} md={6}>
+                                        <Grid item xs={6} sm={6} md={6}>
                                             <CardContent>
                                                 <Typography
                                                     variant="h5"
                                                 >
-                                                    ${withdrawal.amount}
+                                                    ${trade.amount}
                                                 </Typography>
                                                 <Typography
                                                     variant="caption"
                                                 >
-                                                    {withdrawal.user}
+                                                    {trade.user}
                                                 </Typography>
                                             </CardContent>
                                         </Grid>
-                                        <Grid item xs={12} sm={6} md={6} className={classes.alignRight}>
+                                        <Grid item xs={6} sm={6} md={6} className={classes.alignRight}>
                                             <CardContent>
                                                 <Typography
                                                     variant="caption"
                                                 >
-                                                    {withdrawal.date}
+                                                    {trade.date}
                                                 </Typography>
                                                 <Grid>
-                                                    {withdrawal.status === 'approved' && (
+                                                    {trade.status === 'approved' && (
                                                     <Typography
                                                         variant="caption"
                                                         className={classes.green}
                                                     >
-                                                        {withdrawal.status}
+                                                        {trade.status}
                                                     </Typography>
                                                     )}
-                                                    {withdrawal.status === 'declined' && (
+                                                    {trade.status === 'declined' && (
                                                     <Typography
                                                         variant="caption"
                                                         className={classes.red}
                                                     >
-                                                        {withdrawal.status}
+                                                        {trade.status}
                                                     </Typography>
                                                     )}
-                                                    {withdrawal.status === 'pending' && (
+                                                    {trade.status === 'pending' && (
                                                     <Typography
                                                         variant="caption"
                                                         className={classes.yellow}
                                                     >
-                                                        {withdrawal.status}
+                                                        {trade.status}
                                                     </Typography>
                                                     )}
                                                 </Grid>
                                             </CardContent>
                                         </Grid>
                                     </Grid>
-                                </Card>
-                            </Grid>
-                        )}
-                        {type === 'pending' && withdrawal.status === type && (
-                            <Grid item xs={12} sm={6} md={6}>
-                                <Card>
-                                    <CardHeader
-                                    subheader={`Transaction ID: ${withdrawal.transactionId}`}
-                                    action={
-                                      <IconButton id={`${withdrawal.transactionId}-menu-button`} onClick={(event) => setSelectedTransactionId(withdrawal.transactionId, event)}>
-                                        <MoreVertIcon />
-                                      </IconButton>
-                                    }
-                                    />
                                     <Grid container spacing={1}>
-                                        <Grid item xs={12} sm={6} md={6}>
+                                        <Grid item  xs={6} sm={6} md={6} className={classes.centerContent}>
                                             <CardContent>
-                                                <Typography
-                                                    variant="h5"
-                                                >
-                                                    ${withdrawal.amount}
-                                                </Typography>
-                                                <Typography
-                                                    variant="caption"
-                                                >
-                                                    {withdrawal.user}
-                                                </Typography>
+                                                <Button variant="contained" className={classes.green} onClick={() => {handleApprove(trade.transactionId); forceUpdate()}}>Approve</Button>
                                             </CardContent>
                                         </Grid>
-                                        <Grid item xs={12} sm={6} md={6} className={classes.alignRight}>
+                                        <Grid item  xs={6} sm={6} md={6} className={classes.centerContent}>
                                             <CardContent>
-                                                <Typography
-                                                    variant="caption"
-                                                >
-                                                    {withdrawal.date}
-                                                </Typography>
-                                                <Grid>
-                                                    {withdrawal.status === 'approved' && (
-                                                    <Typography
-                                                        variant="caption"
-                                                        className={classes.green}
-                                                    >
-                                                        {withdrawal.status}
-                                                    </Typography>
-                                                    )}
-                                                    {withdrawal.status === 'declined' && (
-                                                    <Typography
-                                                        variant="caption"
-                                                        className={classes.red}
-                                                    >
-                                                        {withdrawal.status}
-                                                    </Typography>
-                                                    )}
-                                                    {withdrawal.status === 'pending' && (
-                                                    <Typography
-                                                        variant="caption"
-                                                        className={classes.yellow}
-                                                    >
-                                                        {withdrawal.status}
-                                                    </Typography>
-                                                    )}
-                                                </Grid>
+                                                <Button variant="contained" className={classes.red} onClick={() => {handleDecline(trade.transactionId); forceUpdate()}}>Decline</Button>
                                             </CardContent>
                                         </Grid>
                                     </Grid>

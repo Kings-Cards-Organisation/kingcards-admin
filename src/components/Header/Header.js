@@ -133,11 +133,11 @@ const Header = ({
           <div className={classes.logo}></div>
         </div>
 
-        <Hidden xsDown>
+        <Hidden>
           <div className={classes.searchWrapper}></div>
         </Hidden>
 
-        <Hidden xsDown>
+        <Hidden>
           <IconButton color="inherit" onClick={toggleFullscreen}>
             <FullscreenIcon />
           </IconButton>

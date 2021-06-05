@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { useParams } from 'react-router-dom'
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBack from '@material-ui/icons/ArrowBack';
-import AppBar from '@material-ui/core/AppBar';
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Grid from "@material-ui/core/Grid";
@@ -13,6 +12,7 @@ import { Wrapper } from "../../components";
 import { makeStyles } from '@material-ui/core/styles';
 import demoTrades from '../../server/demo-user-data/demoTrades'
 import demoWithdrawals from '../../server/demo-user-data/demoWithdrawals'
+import { Button } from "@material-ui/core";
 
 
 const useStyles = makeStyles(theme => ({
@@ -78,8 +78,28 @@ const useStyles = makeStyles(theme => ({
     },
     yellow: {
       color: '#ffd740'
+    },
+    whiteText: {
+      color: 'white'
+    },
+    transparentBackground: {
+      width: '100%',
+      position: 'relative',
+      left: '0px',
+      zIndex: 2,
+      backgroundColor: 'rgb(0, 0, 0, 0.25)'
+    },
+    centerContent: {
+      display: 'flex',
+      justifyContent: 'center'
     }
 }));
+
+
+const useForceUpdate = () => {
+    const [forcedTransaction, setForcedTransaction] = useState(0)
+    return () => setForcedTransaction(forcedTransaction + 1)
+}
 
 const TransactionDetails = (props) => {
 
@@ -90,7 +110,7 @@ const TransactionDetails = (props) => {
         window.history.go(-1)
     }
 
-    const transaction = (() => {
+    const [transaction, setTransaction] = useState((() => {
         if (props.transactionType === 'withdrawal') {
             for (let index = 0; index < demoWithdrawals.length; index++) {
                 if (demoWithdrawals[index].transactionId === id) {
@@ -104,39 +124,98 @@ const TransactionDetails = (props) => {
                 }
             }
         }
-    })()
+    })())
+
+    const forceUpdate = useForceUpdate()
+
+    const handleApprove = () => {
+        if (props.transactionType === 'withdrawal') {
+            for (let index = 0; index < demoWithdrawals.length; index++) {
+                if (demoWithdrawals[index].transactionId === id) {
+                    demoWithdrawals[index].status = 'approved'
+                    return setTransaction(demoWithdrawals[index])
+                }
+            }
+        } else if (props.transactionType === 'trade') {
+            for (let index = 0; index < demoTrades.length; index++) {
+                if (demoTrades[index].transactionId === id) {
+                    demoTrades[index].status = 'approved'
+                    return setTransaction(demoTrades[index])
+                }
+            }
+        }
+    }
+
+    const handleDecline = () => {
+        if (props.transactionType === 'withdrawal') {
+            for (let index = 0; index < demoWithdrawals.length; index++) {
+                if (demoWithdrawals[index].transactionId === id) {
+                    demoWithdrawals[index].status = 'declined'
+                    return setTransaction(demoWithdrawals[index])
+                }
+            }
+        } else if (props.transactionType === 'trade') {
+            for (let index = 0; index < demoTrades.length; index++) {
+                if (demoTrades[index].transactionId === id) {
+                    demoTrades[index].status = 'declined'
+                    return setTransaction(demoTrades[index])
+                }
+            }
+        }
+    }
+
+    const handleReverse = () => {
+        if (props.transactionType === 'withdrawal') {
+            for (let index = 0; index < demoWithdrawals.length; index++) {
+                if (demoWithdrawals[index].transactionId === id) {
+                    demoWithdrawals[index].status = 'pending'
+                    return setTransaction(demoWithdrawals[index])
+                }
+            }
+        } else if (props.transactionType === 'trade') {
+            for (let index = 0; index < demoTrades.length; index++) {
+                if (demoTrades[index].transactionId === id) {
+                    demoTrades[index].status = 'pending'
+                    return setTransaction(demoTrades[index])
+                }
+            }
+        }
+    }
 
     return (
         <Wrapper>
-            <AppBar position="static" className={classes.appBar}>
+            <Grid className={classes.transparentBackground}>
                 <Toolbar>
                     <Grid container spacing={1}>
-                        <Grid item xs={2} sm={2} md={2}>
-                            <Hidden xsDown>
+                        <Grid item xs={2} sm={3} md={3} className={classes.centerContent}>
+                            <Hidden>
                                 <IconButton className={classes.searchIcon} onClick={goToPreviousPage}>
                                     <ArrowBack />
                                 </IconButton>
                             </Hidden>
                         </Grid>
                         
-                        <Grid item xs={10} sm={6} md={6}>
-                            <Hidden xsDown>
+                        <Grid item xs={8} sm={6} md={6} className={classes.centerContent}>
+                            <Hidden>
                                 <Typography
                                     variant="h5"
+                                    className={classes.whiteText}
                                 >
-                                    {props.transactionType}
+                                    {props.transactionType.toUpperCase()}
                                 </Typography>
                             </Hidden>
                         </Grid>
                         
-                        <Grid item>
-                            <Hidden xsDown>
-                                <div className={classes.searchWrapper}></div>
-                            </Hidden>
+                        <Grid item xs={2} sm={3} md={3}>
+                            {window.innerwidth < window.innerHeight && (
+                                <Hidden>
+                                    <div className={classes.searchWrapper}></div>
+                                </Hidden>
+                            )}
                         </Grid>
                     </Grid>
                 </Toolbar>
-            </AppBar>
+            </Grid>
 
             <Grid container spacing={2} className={classes.stepDown}>
                 <Grid item xs={12} sm={12} md={12}>
@@ -232,6 +311,60 @@ const TransactionDetails = (props) => {
                     </Typography>
                 </Grid>
             </Grid>
+            {props.transactionType === 'trade' && (
+                <Grid container spacing={1}>
+                    {transaction.status === 'pending' && (
+                        <Fragment>
+                            <Grid item  xs={6} sm={6} md={6} className={classes.centerContent}>
+                                <CardContent>
+                                    <Button variant="contained" className={classes.green} onClick={() => {handleApprove(); forceUpdate()}}>Approve</Button>
+                                </CardContent>
+                            </Grid>
+                            <Grid item  xs={6} sm={6} md={6} className={classes.centerContent}>
+                                <CardContent>
+                                    <Button variant="contained" className={classes.red} onClick={() => {handleDecline(); forceUpdate()}}>Decline</Button>
+                                </CardContent>
+                            </Grid>
+                        </Fragment>
+                    )}
+                    {transaction.status !== 'pending' && (
+                        <Fragment>
+                            <Grid item  xs={12} sm={12} md={12} className={classes.centerContent}>
+                                <CardContent>
+                                    <Button variant="contained" className={classes.red} onClick={() => {handleReverse(); forceUpdate()}}>Reverse</Button>
+                                </CardContent>
+                            </Grid>
+                        </Fragment>
+                    )}
+                </Grid>
+            )}
+            {props.transactionType === 'withdrawal' && (
+                <Grid container spacing={1}>
+                    {transaction.status === 'pending' && (
+                        <Fragment>
+                            <Grid item  xs={6} sm={6} md={6} className={classes.centerContent}>
+                                <CardContent>
+                                    <Button variant="contained" className={classes.green} onClick={() => {handleApprove(); forceUpdate()}}>Approve</Button>
+                                </CardContent>
+                            </Grid>
+                            <Grid item  xs={6} sm={6} md={6} className={classes.centerContent}>
+                                <CardContent>
+                                    <Button variant="contained" className={classes.red} onClick={() => {handleDecline(); forceUpdate()}}>Decline</Button>
+                                </CardContent>
+                            </Grid>
+                        </Fragment>
+                    )}
+                    {transaction.status === 'declined' && (
+                        <Fragment>
+                            <Grid item  xs={12} sm={12} md={12} className={classes.centerContent}>
+                                <CardContent>
+                                    <Button variant="contained" className={classes.red} onClick={() => {handleReverse(); forceUpdate()}}>Reverse</Button>
+                                </CardContent>
+                            </Grid>
+                        </Fragment>
+                    )}
+                </Grid>
+            )}
         </Wrapper>
     )
 }
