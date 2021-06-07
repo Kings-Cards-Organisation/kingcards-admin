@@ -4,12 +4,12 @@ import {
   Autocomplete,
   Avatars,
   Home,
-  Messages,
   Social
 } from './pages';
 
 import Withdrawals from './pages/admin-pages/Withdrawals'
 import Trades from './pages/admin-pages/Trades'
+import UserTransactions from './pages/admin-pages/UserTransactions'
 
 // Icons
 import AppsIcon from '@material-ui/icons/Apps';
@@ -64,7 +64,7 @@ export default {
         {
           path: '/transaction-stats',
           name: 'Transaction Stats',
-          component: Messages
+          component: UserTransactions
         },
         {
           path: '/usage-stats',

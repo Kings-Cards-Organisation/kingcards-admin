@@ -23,14 +23,9 @@ import MenuItem from "@material-ui/core/MenuItem"
 import Select from "@material-ui/core/Select"
 import Typography from '@material-ui/core/Typography';
 
-// import IconButton from "@material-ui/core/IconButton";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-// import LocalOfferIcon from "@material-ui/icons/LocalOffer";
-// import MenuItem from "@material-ui/core/MenuItem";
 import MoreIcon from "@material-ui/icons/More";
-// import MoreVertIcon from "@material-ui/icons/MoreVert";
-// import NotificationsIcon from "@material-ui/icons/Notifications";
 import PersonIcon from '@material-ui/icons/Person';
 import SettingsIcon from "@material-ui/icons/Settings";
 import Hidden from '@material-ui/core/Hidden';
@@ -97,7 +92,7 @@ const useStyles = makeStyles(theme => ({
     color: 'rgba(0,0,0,.87)'
   },
   stepDown: {
-    marginTop: theme.spacing(10)
+    marginTop: theme.spacing(5)
   },
   alignRight: {
     textAlign: 'right'

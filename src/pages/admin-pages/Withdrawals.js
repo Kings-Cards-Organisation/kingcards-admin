@@ -97,7 +97,7 @@ const useStyles = makeStyles(theme => ({
     color: 'rgba(0,0,0,.87)'
   },
   stepDown: {
-    marginTop: theme.spacing(10)
+    marginTop: theme.spacing(5)
   },
   alignRight: {
     textAlign: 'right'
